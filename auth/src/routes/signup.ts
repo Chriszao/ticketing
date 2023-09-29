@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { errorsValidator, signUpValidator } from '../middlewares/validators';
+import { DatabaseConnectionError } from '../errors/database-connection-error';
 
 export const signUpRouter = Router();
 
@@ -11,5 +12,7 @@ signUpRouter.post('/signUp', (request: Request, response: Response) => {
 
 	console.log('Creating a user..');
 
-	response.json({});
+	throw new DatabaseConnectionError();
+
+	// response.json({});
 });
