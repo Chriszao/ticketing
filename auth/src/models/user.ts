@@ -9,6 +9,23 @@ interface UserAttributes {
 	password: string;
 }
 
+/**
+ * Interface that describes the properties
+ * that a User Document has
+ */
+interface UserDocument extends mongoose.Document {
+	email: string;
+	password: string;
+}
+
+/**
+ * An interface that describes the properties
+ * that a User Model has
+ */
+interface UserModel extends mongoose.Model<UserDocument> {
+	build(attributes: UserAttributes): UserDocument;
+}
+
 const userSchema = new mongoose.Schema({
 	email: {
 		type: String,
@@ -20,8 +37,6 @@ const userSchema = new mongoose.Schema({
 	},
 });
 
-export const User = mongoose.model('User', userSchema);
+userSchema.statics.build = (attributes: UserAttributes) => new User(attributes);
 
-export function buildUser(attributes: UserAttributes) {
-	return new User(attributes);
-}
+export const User = mongoose.model<UserDocument, UserModel>('User', userSchema);
