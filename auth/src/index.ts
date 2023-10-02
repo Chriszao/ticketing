@@ -5,11 +5,19 @@ import { NotFoundError } from './errors';
 import { errorHandler } from './middlewares';
 import { router } from './routes';
 import mongoose from 'mongoose';
+import cookieSession from 'cookie-session';
 
 const app = express();
 
-app.use(json());
+app.set('trust proxy', true); // Requests are being proxied through the nginx ingress controller
 
+app.use(json());
+app.use(
+	cookieSession({
+		signed: false,
+		secure: true,
+	}),
+);
 app.use(router);
 
 app.all('*', async () => {
