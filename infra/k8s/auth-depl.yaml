@@ -15,6 +15,12 @@ spec:
       containers:
         - name: auth
           image: chriszao/auth
+          env:
+            - name: JWT_KEY # Remember to create the secret pod with the following command: kubectl create secret generic jwt-secret --from-literal=JWT_KEY=value_of_the_secret
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
 ---
 apiVersion: v1
 kind: Service

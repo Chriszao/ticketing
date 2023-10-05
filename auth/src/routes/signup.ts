@@ -1,7 +1,8 @@
 import { Request, Response, Router } from 'express';
+import jwt from 'jsonwebtoken';
+import { BadRequestError } from '../errors';
 import { errorsValidator, signUpValidator } from '../middlewares/validators';
 import { User } from '../models';
-import { BadRequestError } from '../errors';
 
 export const signUpRouter = Router();
 
@@ -20,6 +21,10 @@ signUpRouter.post('/signUp', async (request: Request, response: Response) => {
 	const newUser = User.build({ email, password });
 
 	await newUser.save();
+
+	const jwtToken = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_KEY!);
+
+	request.session = { jwt: jwtToken };
 
 	response.status(201).send(newUser);
 });
