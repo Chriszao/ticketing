@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
+import request from 'supertest';
+import { HttpStatusCode } from '../@types';
+import { app } from '../app';
 import { loadEnvVariables } from '../config';
+
+declare global {
+	var signIn: () => Promise<string[]>;
+}
 
 beforeAll(async () => {
 	process.env.JWT_KEY = 'asdfasdadasd';
@@ -20,3 +27,20 @@ beforeEach(async () => {
 afterAll(async () => {
 	await mongoose.connection.close();
 });
+
+global.signIn = async () => {
+	const email = 'test@test.com';
+	const password = 'password';
+
+	const response = await request(app)
+		.post('/api/users/signUp')
+		.send({
+			email,
+			password,
+		})
+		.expect(HttpStatusCode.Created);
+
+	const cookie = response.get('Set-Cookie');
+
+	return cookie;
+};
