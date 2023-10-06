@@ -1,7 +1,8 @@
+import { HttpStatusCode } from '../@types';
 import { CustomError, SerializedError } from './custom-error';
 
 export class BadRequestError extends CustomError {
-	statusCode = 400;
+	statusCode = HttpStatusCode.BadRequest;
 
 	constructor(message: string) {
 		super(message);

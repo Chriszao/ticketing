@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { BadRequestError } from '../errors';
 import { errorsValidator, signUpValidator } from '../middlewares/validators';
 import { User } from '../models';
+import { HttpStatusCode } from '../@types';
 
 export const signUpRouter = Router();
 
@@ -26,5 +27,5 @@ signUpRouter.post('/signUp', async (request: Request, response: Response) => {
 
 	request.session = { jwt: jwtToken };
 
-	response.status(201).send(newUser);
+	response.status(HttpStatusCode.Created).send(newUser);
 });

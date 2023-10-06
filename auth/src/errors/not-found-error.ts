@@ -1,7 +1,8 @@
+import { HttpStatusCode } from '../@types';
 import { CustomError, SerializedError } from './custom-error';
 
 export class NotFoundError extends CustomError {
-	statusCode = 404;
+	statusCode = HttpStatusCode.NotFound;
 
 	constructor() {
 		super('Route not found');

@@ -1,7 +1,8 @@
+import { HttpStatusCode } from '../@types';
 import { CustomError, SerializedError } from './custom-error';
 
 export class DatabaseConnectionError extends CustomError {
-	statusCode = 500;
+	statusCode = HttpStatusCode.InternalServerError;
 
 	private reason = 'Error connecting to database';
 
