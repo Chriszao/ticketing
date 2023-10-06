@@ -11,4 +11,11 @@ describe('GET /api/users/currentUser', () => {
 		expect(response.status).toBe(HttpStatusCode.OK);
 		expect(response.body.currentUser.email).toEqual('test@test.com');
 	});
+
+	it('should returns null if not authenticated', async () => {
+		const response = await request(app).get('/api/users/currentUser');
+
+		expect(response.status).toBe(HttpStatusCode.OK);
+		expect(response.body.currentUser).toBeNull();
+	});
 });
