@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
 import { app } from './app';
+import { loadEnvVariables } from './config';
 
 async function start() {
-	if (!process.env.JWT_KEY) {
-		throw new Error('JWT_KEY env variable must be defined');
-	}
+	loadEnvVariables();
 
 	try {
 		await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
