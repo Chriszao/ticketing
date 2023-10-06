@@ -43,4 +43,18 @@ describe('POST /api/users/signup', () => {
 
 		expect(response.status).toBe(HttpStatusCode.BadRequest);
 	});
+
+	it('should disallow duplicate emails', async () => {
+		let response = await request(app)
+			.post('/api/users/signup')
+			.send({ email: 'test@test.com', password: 'password' });
+
+		expect(response.status).toBe(HttpStatusCode.Created);
+
+		response = await request(app)
+			.post('/api/users/signup')
+			.send({ email: 'test@test.com', password: 'password' });
+
+		expect(response.status).toBe(HttpStatusCode.BadRequest);
+	});
 });
