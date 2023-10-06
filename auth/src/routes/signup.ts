@@ -4,6 +4,7 @@ import { BadRequestError } from '../errors';
 import { errorsValidator, signUpValidator } from '../middlewares/validators';
 import { User } from '../models';
 import { HttpStatusCode } from '../@types';
+import { env } from '../config';
 
 export const signUpRouter = Router();
 
@@ -23,7 +24,7 @@ signUpRouter.post('/signUp', async (request: Request, response: Response) => {
 
 	await newUser.save();
 
-	const jwtToken = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_KEY!);
+	const jwtToken = jwt.sign({ id: newUser.id, email: newUser.email }, env.JWT_KEY);
 
 	request.session = { jwt: jwtToken };
 

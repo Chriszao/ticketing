@@ -5,6 +5,7 @@ import { BadRequestError } from '../errors';
 import { errorsValidator, signInValidator } from '../middlewares/validators';
 import { User } from '../models';
 import { Password } from '../services';
+import { env } from '../config';
 
 export const signInRouter = Router();
 
@@ -26,10 +27,7 @@ signInRouter.post('/signIn', async (request: Request, response: Response) => {
 		throw new BadRequestError('Invalid credentials');
 	}
 
-	const jwtToken = jwt.sign(
-		{ id: existingUser.id, email: existingUser.email },
-		process.env.JWT_KEY!,
-	);
+	const jwtToken = jwt.sign({ id: existingUser.id, email: existingUser.email }, env.JWT_KEY!);
 
 	request.session = { jwt: jwtToken };
 
