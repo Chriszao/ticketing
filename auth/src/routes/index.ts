@@ -6,7 +6,7 @@ import { currentUserRouter } from './current-user';
 
 export const router = Router();
 
-router.use('/api/users', signInRouter);
-router.use('/api/users', signOutRouter);
-router.use('/api/users', signUpRouter);
-router.use('/api/users', currentUserRouter);
+router.use('/users', signInRouter);
+router.use('/users', signOutRouter);
+router.use('/users', signUpRouter);
+router.use('/users', currentUserRouter);

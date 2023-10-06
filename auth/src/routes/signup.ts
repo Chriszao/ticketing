@@ -8,25 +8,27 @@ import { env } from '../config';
 
 export const signUpRouter = Router();
 
-signUpRouter.use(signUpValidator);
-signUpRouter.use(errorsValidator);
+signUpRouter.post(
+	'/signUp',
+	signUpValidator,
+	errorsValidator,
+	async (request: Request, response: Response) => {
+		const { email, password } = request.body;
 
-signUpRouter.post('/signUp', async (request: Request, response: Response) => {
-	const { email, password } = request.body;
+		const existingUser = await User.findOne({ email });
 
-	const existingUser = await User.findOne({ email });
+		if (existingUser) {
+			throw new BadRequestError('E-mail already in use');
+		}
 
-	if (existingUser) {
-		throw new BadRequestError('E-mail already in use');
-	}
+		const newUser = User.build({ email, password });
 
-	const newUser = User.build({ email, password });
+		await newUser.save();
 
-	await newUser.save();
+		const jwtToken = jwt.sign({ id: newUser.id, email: newUser.email }, env.JWT_KEY);
 
-	const jwtToken = jwt.sign({ id: newUser.id, email: newUser.email }, env.JWT_KEY);
+		request.session = { jwt: jwtToken };
 
-	request.session = { jwt: jwtToken };
-
-	response.status(HttpStatusCode.Created).send(newUser);
-});
+		response.status(HttpStatusCode.Created).send(newUser);
+	},
+);

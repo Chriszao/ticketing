@@ -18,7 +18,7 @@ app.use(
 		secure: true,
 	}),
 );
-app.use(router);
+app.use('/api', router);
 
 app.all('*', async () => {
 	throw new NotFoundError();

@@ -9,27 +9,29 @@ import { env } from '../config';
 
 export const signInRouter = Router();
 
-signInRouter.use(signInValidator);
-signInRouter.use(errorsValidator);
+signInRouter.post(
+	'/signIn',
+	signInValidator,
+	errorsValidator,
+	async (request: Request, response: Response) => {
+		const { email, password } = request.body;
 
-signInRouter.post('/signIn', async (request: Request, response: Response) => {
-	const { email, password } = request.body;
+		const existingUser = await User.findOne({ email });
 
-	const existingUser = await User.findOne({ email });
+		if (!existingUser) {
+			throw new BadRequestError('Invalid credentials');
+		}
 
-	if (!existingUser) {
-		throw new BadRequestError('Invalid credentials');
-	}
+		const passwordsMatch = await Password.compare(existingUser.password, password);
 
-	const passwordsMatch = await Password.compare(existingUser.password, password);
+		if (!passwordsMatch) {
+			throw new BadRequestError('Invalid credentials');
+		}
 
-	if (!passwordsMatch) {
-		throw new BadRequestError('Invalid credentials');
-	}
+		const jwtToken = jwt.sign({ id: existingUser.id, email: existingUser.email }, env.JWT_KEY!);
 
-	const jwtToken = jwt.sign({ id: existingUser.id, email: existingUser.email }, env.JWT_KEY!);
+		request.session = { jwt: jwtToken };
 
-	request.session = { jwt: jwtToken };
-
-	response.status(HttpStatusCode.OK).send(existingUser);
-});
+		response.status(HttpStatusCode.OK).send(existingUser);
+	},
+);
