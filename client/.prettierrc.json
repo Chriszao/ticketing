@@ -1,0 +1,9 @@
+{
+  "prettier.arrowParens": "always",
+  "prettier.endOfLine": "auto",
+  "prettier.jsxSingleQuote": false,
+  "prettier.semi": true,
+  "prettier.singleQuote": true,
+  "prettier.useTabs": true,
+  "prettier.trailingComma": "all"
+}
