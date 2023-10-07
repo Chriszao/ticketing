@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { SerializedError } from "@/@types";
 
 interface SignUpData {
   email: string;
@@ -11,6 +12,7 @@ export default function SignUp() {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState<SerializedError[]>([]);
 
   function handleInputChange(name: keyof SignUpData, value: string) {
     setSignUpData({ ...signUpData, [name]: value });
@@ -18,14 +20,18 @@ export default function SignUp() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    try {
+      const response = await axios.post("/api/users/signup", signUpData);
+      console.log(response);
+    } catch (error) {
+      const axiosError = error as AxiosError<{ errors: SerializedError[] }>;
 
-    const response = await axios.post("/api/users/signup", signUpData);
-
-    console.log(response.data);
+      setErrors(axiosError.response?.data.errors as SerializedError[]);
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="mx-4 ">
       <h1>Sign Up</h1>
 
       <div className="form-group">
@@ -51,7 +57,18 @@ export default function SignUp() {
         />
       </div>
 
-      <button className="btn btn-primary">Sign Up</button>
+      {errors.length > 0 && (
+        <div className="alert alert-danger my-2">
+          <h4>Ooops...</h4>
+          <ul className="my-0">
+            {errors.map((error) => (
+              <li key={error.message}>{error.message}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <button className="btn btn-primary mt-4">Sign Up</button>
     </form>
   );
 }
