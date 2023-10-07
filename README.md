@@ -29,6 +29,7 @@ Before you begin, make sure you've met the following requirements:
 * [Docker](https://www.docker.com/get-started/)
 * [K8s](https://kubernetes.io/)
 * [Skaffold](https://skaffold.dev/)
+* [Ingress Nginx Controller](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
 
 
 ### 📦 Preparing environment
@@ -60,7 +61,14 @@ This application uses NGINX ingress controller as a proxy, so to make local requ
 ```bash
 # ...
 # This will forward every request received in localhost to the NGINX ingress controller.
-127.0.0.1 ticketing.dev 
+127.0.0.1 ticketing.dev
+
+# And install Ingress NGNIX Controller
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+# Remember to create the secret pod to load the env variables with the following command: 
+kubectl create secret generic jwt-secret --from-literal=JWT_KEY=value_of_the_secret
+
 ```
 <!-- 
 ### ☕ Using the Application
