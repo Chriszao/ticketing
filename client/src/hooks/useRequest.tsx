@@ -2,13 +2,19 @@ import { SerializedError } from "@/@types";
 import axios, { AxiosError } from "axios";
 import { ReactElement, useState } from "react";
 
-interface UseRequestProps<T = unknown> {
+interface UseRequestProps<R = unknown, T = unknown> {
   url: string;
   method: "get" | "post" | "put" | "delete";
   body?: T;
+  onSuccess?: (data: R) => void;
 }
 
-export function useRequest<T>({ method, url, body }: UseRequestProps) {
+export function useRequest<T>({
+  method,
+  url,
+  body,
+  onSuccess,
+}: UseRequestProps<T>) {
   const [errors, setErrors] = useState<ReactElement | null>(null);
 
   async function doRequest() {
@@ -16,6 +22,8 @@ export function useRequest<T>({ method, url, body }: UseRequestProps) {
       const response = await axios[method]<T>(url, body);
 
       setErrors(null);
+
+      onSuccess?.(response.data);
 
       return response.data;
     } catch (error) {

@@ -1,4 +1,5 @@
 import { useRequest } from "@/hooks";
+import Router from "next/router";
 import { FormEvent, useState } from "react";
 
 interface SignUpData {
@@ -20,6 +21,7 @@ export default function SignUp() {
     url: "/api/users/signUp",
     method: "post",
     body: signUpData,
+    onSuccess: () => Router.push("/"),
   });
 
   function handleInputChange(name: keyof SignUpData, value: string) {
@@ -28,8 +30,8 @@ export default function SignUp() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const response = await doRequest();
-    console.log(response);
+
+    await doRequest();
   }
 
   return (
