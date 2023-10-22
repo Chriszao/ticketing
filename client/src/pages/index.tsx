@@ -1,10 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { buildClient } from "@/api/build-client";
-
-type CurrentUser = {
-  id: string;
-  email: string;
-} | null;
+import { CurrentUser } from "./_app";
 
 export default function Home({
   currentUser,

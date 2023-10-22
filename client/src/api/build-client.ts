@@ -14,6 +14,6 @@ export function buildClient({ req }: BuildClientProps): AxiosInstance {
       typeof window === "undefined"
         ? "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
         : "/",
-    headers: req.headers,
+    headers: req?.headers,
   });
 }
